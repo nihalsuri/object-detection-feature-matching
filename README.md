@@ -1,6 +1,18 @@
 # CV25 Intermediate Project – Object Detection
 
-## Code Design and Style Guide  
+## Table of Contents
+- [CODE DESIGN AND STYLE GUIDE](#code-design-and-style-guide)
+- [OBJECTIVE](#objective)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
+  - [Suggested Approach](#suggested-approach)
+  - [Dataset](#dataset)
+  - [Evaluation Metrics](#evaluation-metrics)
+  - [Project Requirements](#project-requirements)
+  - [Submission Checklist](#submission-checklist)
+- [SOLUTION PIPELINE](#solution-pipeline)
+
+## **CODE DESIGN AND STYLE GUIDE**
 *All contributors swear to follow these points with the utmost care:* 
 - No usage of GLOBAL VARIABLES!
 - Final project musn't have binary files included
@@ -19,9 +31,7 @@
   - Only camelCase to be used, fyi [case guide](https://medium.com/nerd-for-tech/programming-case-types-explained-143cad3681e3)
   - When it comes to comments, follow only the [the google c++ style guide](https://google.github.io/styleguide/cppguide.html#Comment_Style) 
 
-
-
-##  Objective
+##  **OBJECTIVE**
 Develop an **object detection system** using **C++ with OpenCV** to identify and localize three known objects:
 - Power Drill
 - Mustard Bottle
@@ -63,6 +73,7 @@ Each object has:
 - `labels/` — Ground truth in the format:  <object_id>_<object_name> <xmin> <ymin> <xmax> <ymax>
 
 ---
+
 ### Evaluation Metrics
 - **Mean Intersection over Union (mIoU):**
 Average IoU across all object categories
@@ -87,6 +98,41 @@ Number of correct detections (IoU > 0.5 with ground truth)
 - Hours worked per person
 
 ---
+
+## **SOLUTION PIPELINE**
+
+1. **Feature Detection on Models/Training Data** (using SIFT, SURF ...)
+   - ⇒ List of Feature Vectors
+
+2. **Feature Detection on the whole image** (using the same technique)
+
+3. **For all features in the image**
+   - Find the best match in the training data, i.e., the nearest neighbor in feature space
+   - Qualify the match by normalized distance:  
+     \[
+     d_{i,\text{norm}} = \frac{d_i}{\max(d_i)}
+     \]
+   - Perfect match:  
+     \[
+     d_{i,\text{norm}} = 0
+     \]  
+     Worst match:  
+     \[
+     d_{i,\text{norm}} = 1
+     \]
+   - Note: This only grades the matches relative to each other. If all matches are "good" in absolute terms, one will still be the worst.
+
+4. **Find the best rectangle**
+   - **Sliding window approach**:
+     - Slide the window, take all matches within that window and calculate:
+       \[
+       \text{Confidence} = \sum (1 - d_{i,\text{norm}})
+       \]
+     - Choose the window with the highest confidence score as the "winner" → Box to determine object position
+     - Threshold the confidence value (e.g., \(\text{Confidence} > 500\)) to determine if the object is actually present  
+       ⇒ **Values to decide**: Threshold on confidence for deciding if the winner is the object
+
+
 
 
 
