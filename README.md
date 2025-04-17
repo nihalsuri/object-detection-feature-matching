@@ -1,8 +1,10 @@
 # CV25 Intermediate Project – Object Detection
 
-## Table of Contents
-- [CODE DESIGN AND STYLE GUIDE](#code-design-and-style-guide)
-- [OBJECTIVE](#objective)
+<details>
+  <summary><strong> Table of Contents</strong></summary>
+
+- [Code Design and Style Guide](#code-design-and-style-guide)
+- [Objective](#objective)
   - [Inputs](#inputs)
   - [Outputs](#outputs)
   - [Suggested Approach](#suggested-approach)
@@ -10,9 +12,11 @@
   - [Evaluation Metrics](#evaluation-metrics)
   - [Project Requirements](#project-requirements)
   - [Submission Checklist](#submission-checklist)
-- [SOLUTION PIPELINE](#solution-pipeline)
+- [Solution Pipeline](#solution-pipeline)
 
-## **CODE DESIGN AND STYLE GUIDE**
+</details>
+
+## **Code Design and Style Guide**
 *All contributors swear to follow these points with the utmost care:* 
 - No usage of GLOBAL VARIABLES!
 - Final project musn't have binary files included
@@ -31,7 +35,7 @@
   - Only camelCase to be used, fyi [case guide](https://medium.com/nerd-for-tech/programming-case-types-explained-143cad3681e3)
   - When it comes to comments, follow only the [the google c++ style guide](https://google.github.io/styleguide/cppguide.html#Comment_Style) 
 
-##  **OBJECTIVE**
+##  **Objective**
 Develop an **object detection system** using **C++ with OpenCV** to identify and localize three known objects:
 - Power Drill
 - Mustard Bottle
@@ -99,7 +103,7 @@ Number of correct detections (IoU > 0.5 with ground truth)
 
 ---
 
-## **SOLUTION PIPELINE**
+## **Solution Pipeline**
 
 1. **Feature Detection on Models/Training Data** (using SIFT, SURF ...)
    - ⇒ List of Feature Vectors
@@ -121,7 +125,7 @@ Number of correct detections (IoU > 0.5 with ground truth)
      - Slide the window, take all matches within that window and calculate:
        $$\text{Confidence} = \sum (1 - d_{i,\text{norm}})$$
      - Choose the window with the highest confidence score as the "winner" → Box to determine object position
-     - Threshold the confidence value (e.g., $\text{Confidence} \geq 500$ to determine if the object is actually present  
+     - Threshold the confidence value (e.g., $\text{Confidence} \geq 500$) to determine if the object is actually present  
        ⇒ **Values to decide**: Threshold on confidence for deciding if the winner is the object
 
 
