@@ -121,7 +121,7 @@ Number of correct detections (IoU > 0.5 with ground truth)
      - Slide the window, take all matches within that window and calculate:
        $$\text{Confidence} = \sum (1 - d_{i,\text{norm}})$$
      - Choose the window with the highest confidence score as the "winner" → Box to determine object position
-     - Threshold the confidence value (e.g., Confidence > 500 to determine if the object is actually present  
+     - Threshold the confidence value (e.g., $\text{Confidence} \geq 500$ to determine if the object is actually present  
        ⇒ **Values to decide**: Threshold on confidence for deciding if the winner is the object
 
 
