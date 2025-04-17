@@ -109,27 +109,19 @@ Number of correct detections (IoU > 0.5 with ground truth)
 3. **For all features in the image**
    - Find the best match in the training data, i.e., the nearest neighbor in feature space
    - Qualify the match by normalized distance:  
-     $$
-     d_{i,\text{norm}} = \frac{d_i}{\max(d_i)}
-     $$
+     $$d_{i,\text{norm}} = \frac{d_i}{\max(d_i)}$$
    - Perfect match:  
-     $$
-     d_{i,\text{norm}} = 0
-     $$  
+     $$d_{i,\text{norm}} = 0$$  
      Worst match:  
-     $$
-     d_{i,\text{norm}} = 1
-     $$
+     $$d_{i,\text{norm}} = 1$$
    - Note: This only grades the matches relative to each other. If all matches are "good" in absolute terms, one will still be the worst.
 
 4. **Find the best rectangle**
    - **Sliding window approach**:
      - Slide the window, take all matches within that window and calculate:
-       $$
-       \text{Confidence} = \sum (1 - d_{i,\text{norm}})
-       $$
+       $$\text{Confidence} = \sum (1 - d_{i,\text{norm}})$$
      - Choose the window with the highest confidence score as the "winner" → Box to determine object position
-     - Threshold the confidence value (e.g., \(\text{Confidence} > 500\)) to determine if the object is actually present  
+     - Threshold the confidence value (e.g., Confidence > 500 to determine if the object is actually present  
        ⇒ **Values to decide**: Threshold on confidence for deciding if the winner is the object
 
 
