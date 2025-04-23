@@ -8,13 +8,13 @@
 #include <filesystem>
 
 #include "Utils/inputProcessing_MaxPries.h"
+#include "Utils/OutputProcessing_BjornMagnus.h"
 #include "ObjectDetector/featureDetection_MaxPries.h"
 #include "FeatureMatcher/featureMatching_MaxPries.h"
+#include "ObjectDetector/ObjectDetector_BjornMagnus.h"
 
 
-
-
-
+ 
 
 int main(int argc, char** argv)
 {
@@ -33,7 +33,8 @@ int main(int argc, char** argv)
     cv::Mat testImage;
     cv::Mat descriptorsTest;
     std::vector<cv::KeyPoint> keypointsTest;
-    loadInput(testImage, pathListSugarTest[1]);
+    std::string imagePath = pathListSugarTest[3];
+    loadInput(testImage, imagePath);
     computeFeaturesSingleImage(testImage, descriptorsTest, keypointsTest);
     
 
@@ -52,14 +53,36 @@ int main(int argc, char** argv)
     keypointSelection(goodKeypoints, goodMatches, keypointsTest);
 
 
+    //Find position of rectangl that fit most keypoints 
+    cv::Rect bestBox;
+    fitBox(testImage,goodKeypoints,300,150,bestBox);
+    //Find position of rectangl that fit most keypoints and centre the rectangle around the keypoints 
+    cv::Rect bestBoxCentred;
+    fitBoxCentred(testImage,goodKeypoints,300,150,bestBoxCentred);
+    //Find all the object based on canny edge detection 
+    std::vector<cv::Rect> boxes;
+    detectAllObjects(testImage,boxes, 100000);
+    //Find the rectangle that fits the most keypoints 
+    cv::Rect bestBox2;
+    findBestBox(goodKeypoints,boxes, bestBox2);
+
+
+
     //Draw the good keypoints
     cv::Mat outImage;
     cv::Scalar color( 0, 0, 255 );
     cv::drawKeypoints(testImage, goodKeypoints, outImage, color);
-    namedWindow("TEST", cv::WINDOW_AUTOSIZE);
-    cv::imshow("TEST", outImage);
-    cv::waitKey(0);
-    
+
+    //Draw the Boxes 
+    cv::rectangle(outImage, bestBox, cv::Scalar(0, 0, 255),2);
+    cv::rectangle(outImage, bestBox2, cv::Scalar(0, 255, 0),2);
+    cv::rectangle(outImage, bestBoxCentred, cv::Scalar(255, 0, 0),2);
+
+    //Open image
+    openImage(outImage,1,"Test");
+
+    //Save image with original name + _output.jpg saved to given path 
+    saveImage(outImage,imagePath,"../data/Output/","_output.jpg");
 
     return 0;
 }
