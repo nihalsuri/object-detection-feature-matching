@@ -23,12 +23,13 @@ set(FEATURE_MATCHER
 
 set(OBJECT_DETECTOR
     src/ObjectDetector/featureDetection_MaxPries.cpp
-    src/ObjectDetector/ObjectDetector.cpp
+    src/ObjectDetector/ObjectDetector_BjornMagnus.cpp
 )
 
 set(UTILS
     src/Utils/inputProcessing_MaxPries.cpp
     src/Utils/Utils.cpp
+    src/Utils/OutputProcessing_BjornMagnus.cpp
 )
 
 add_executable(CV_Midterm 
