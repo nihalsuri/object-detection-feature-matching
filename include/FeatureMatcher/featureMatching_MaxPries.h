@@ -26,12 +26,13 @@ void matchFromDescriptors(const cv::Mat &dscrTest, const cv::Mat &dscrTrain,
 // Applies the ratio test as described by D. Lowe. Disregards matches if the 
 // second best match is also good.
 // Inputs:
-// matchesIn  - a vector containing one vector for each keypoint. The inner
-//              vector contains the two best DMatch elements.
-// matchesOut - a vector containing only those DMatch elements, which are
-//              noticably better than the second best matches
+// matchesIn   - a vector containing one vector for each keypoint. The inner
+//               vector contains the two best DMatch elements.
+// matchesOut  - a vector containing only those DMatch elements, which are
+//               noticably better than the second best matches
+// cutOffRatio - the ratio to be considered in the ratio test
 void ratioTest(const std::vector<std::vector<cv::DMatch>> &matchesIn,
-    std::vector<cv::DMatch> &matchesOut);
+    std::vector<cv::DMatch> &matchesOut, const double cutOffRatio);
 
 
 // Selects the keypoints corresponding to good matches.
