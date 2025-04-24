@@ -12,13 +12,13 @@ void matchFromDescriptors(const cv::Mat &dscrTest, const cv::Mat &dscrTrain,
 
 
 void ratioTest(const std::vector<std::vector<cv::DMatch>> &matchesIn,
-    std::vector<cv::DMatch> &matchesOut)
+    std::vector<cv::DMatch> &matchesOut, const double cutOffRatio)
 {
     for (const std::vector<cv::DMatch>& match : matchesIn)
     {
         // If the best match is considerably better than the second best, keep it
         // The threshold of 0.75 is given by D. Lowe in his paper (can change this)
-        if (match.size() == 2 && match[0].distance < 0.75 * match[1].distance)
+        if (match.size() == 2 && match[0].distance < cutOffRatio * match[1].distance)
             matchesOut.push_back(match[0]);
     }
 }
