@@ -33,17 +33,18 @@ int main(int argc, char** argv)
     
 
     //Load one test image and compute its keypoints
-
     cv::Rect objectDeteced,objectDeteced1,objectDeteced2;
     std::string imagePath = pathListSugarTest[3];
     std::vector<cv::KeyPoint> goodKeypoints;
+    double sigma = 1;
+    double cutOffRatio = 0.77;
 
-    //Find position of rectangl that fit most keypoints
-    runDetection(imagePath, descriptorList, 0, 12 , objectDeteced, goodKeypoints);
+    //Find position of rectangle that fit most keypoints
+    runDetection(imagePath, descriptorList, 0, 12 , objectDeteced, goodKeypoints, sigma, cutOffRatio);
     //Find position of rectangl that fit most keypoints and centre the rectangle around the keypoints 
-    runDetection(imagePath, descriptorList, 1, 12 , objectDeteced1, goodKeypoints);
+    runDetection(imagePath, descriptorList, 1, 12 , objectDeteced1, goodKeypoints, sigma, cutOffRatio);
     //Find all the object based on canny edge detection and find the object containing the most keypoints
-    runDetection(imagePath, descriptorList, 2, 12 , objectDeteced2, goodKeypoints);
+    runDetection(imagePath, descriptorList, 2, 12 , objectDeteced2, goodKeypoints, sigma, cutOffRatio);
     
     //Draw the good keypoints
     cv::Mat testImage;
