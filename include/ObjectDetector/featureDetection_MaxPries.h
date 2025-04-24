@@ -14,8 +14,9 @@
 // img         - the image to be analyzed
 // descriptors - a cv::Mat object containing all descriptors
 // keypoints   - a vector containing all keypoints as cv::Keypoint
+// sigma       - the sigma value for gaussian blur befor feature detection
 void computeFeaturesSingleImage(const cv::Mat &img, cv::Mat &descriptors, 
-    std::vector<cv::KeyPoint> &keypoints);
+    std::vector<cv::KeyPoint> &keypoints, const double sigma);
 
 
 // Computes all descriptors inside a mask for a set of images

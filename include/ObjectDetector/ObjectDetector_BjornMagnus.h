@@ -53,12 +53,12 @@ void findBestBox(std::vector<cv::KeyPoint> &Keypoints,std::vector<cv::Rect> boxe
 // minKeypoints -Minimal keypoints to decide if the box contain the object or not 
 void boxDecider(std::vector<cv::KeyPoint> &Keypoints,cv::Rect &box, int minKeypoints);
 
-//  - Function that processes one image (input:  one image path,
+// Processes one image (input:  one image path,
 //                                               full descriptor list of one object,
 //                                               mode - choose which box,
 //					                             minimal keypoints; 
 //                                               rect object)
-void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int minKeypoints , cv::Rect &objectDeteced,std::vector<cv::KeyPoint> &goodKeypoints);
+void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int minKeypoints , cv::Rect &objectDeteced,std::vector<cv::KeyPoint> &goodKeypoints, const double sigma, const double cutOffRatio);
 
 
 
