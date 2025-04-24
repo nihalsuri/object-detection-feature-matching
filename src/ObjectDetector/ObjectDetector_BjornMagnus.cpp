@@ -129,3 +129,65 @@ void findBestBox(std::vector<cv::KeyPoint> &Keypoints,std::vector<cv::Rect> boxe
     // Set the box containg the most features to the bestBox
     bestBox = leadingBox;
 }
+
+
+void boxDecider(std::vector<cv::KeyPoint> &Keypoints,cv::Rect &box, int minKeypoints){
+    int featureCount = 0;
+
+    //Counts the number of keypoints contained in the box 
+    for (int a = 0; a<Keypoints.size() ;++a){
+        if(box.contains(Keypoints[a].pt))featureCount++;
+    }
+    // Set the box to an empty Rect if the minimum keypoints contained is not reached 
+    if (featureCount<minKeypoints)box = cv::Rect();
+    
+}
+
+
+void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int minKeypoints , cv::Rect &objectDeteced,std::vector<cv::KeyPoint> &goodKeypoints){
+   
+    cv::Mat Image;
+    cv::Mat descriptorsTest;
+    std::vector<cv::KeyPoint> keypointsTest;
+
+    //Load one test image and compute its keypoints
+    loadInput(Image, imagePath);
+    computeFeaturesSingleImage(Image, descriptorsTest, keypointsTest);
+    
+    //Match the features of the image to those of the model
+    std::vector<std::vector<cv::DMatch>> matches;
+    matchFromDescriptors(descriptorsTest, descriptorList, matches);
+
+    //Filter only good matches, using the ratio test
+    std::vector<cv::DMatch> goodMatches;
+    ratioTest(matches, goodMatches);
+
+
+    //Select all keypoints of the test image corresponding to good matches
+    keypointSelection(goodKeypoints, goodMatches, keypointsTest);
+
+    cv::Rect bestBox;
+    if(mode==1){
+    //Find position of rectangl that fit most keypoints 
+    fitBox(Image,goodKeypoints,300,150,bestBox);
+    }
+    else if(mode==2){
+    //Find position of rectangl that fit most keypoints and centre the rectangle around the keypoints 
+    fitBoxCentred(Image,goodKeypoints,300,150,bestBox);
+    }
+    else {
+    //Find all the object based on canny edge detection 
+    std::vector<cv::Rect> boxes;
+    detectAllObjects(Image,boxes, 100000);
+    //Find the rectangle that fits the most keypoints 
+    findBestBox(goodKeypoints,boxes, bestBox);
+    }
+
+    //Decide if the box actually is the object or a false positive 
+    boxDecider(goodKeypoints, bestBox,  minKeypoints);
+
+    //Sets the objectdetected 
+    objectDeteced = bestBox; 
+    
+}
+

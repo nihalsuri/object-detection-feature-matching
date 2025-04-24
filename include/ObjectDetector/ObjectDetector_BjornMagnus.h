@@ -6,6 +6,9 @@
 #include <opencv2/highgui.hpp>     
 #include <opencv2/features2d.hpp>  
 
+#include "ObjectDetector/featureDetection_MaxPries.h"
+#include "FeatureMatcher/featureMatching_MaxPries.h"
+#include "Utils/inputProcessing_MaxPries.h"
 
 // Fits a box with given size to contain highest amount of features, the box get place moth horizontally and vertically 
 // Inputs:
@@ -40,6 +43,22 @@ void detectAllObjects(const cv::Mat &inputImg,std::vector<cv::Rect> &detectedBox
 // bestBox       -A rect to where the best box get written to 
 void findBestBox(std::vector<cv::KeyPoint> &Keypoints,std::vector<cv::Rect> boxes,cv::Rect &bestBox);
 
+
+
+// Given Keupoints and a box counts if the minimal of keypoints contained in the box is reached 
+// If the minimum is not reached set the box to an empty one 
+// Inputs: 
+// Keypoints    -Vector of keypoint to be used 
+// box          -The box to be evaluated 
+// minKeypoints -Minimal keypoints to decide if the box contain the object or not 
+void boxDecider(std::vector<cv::KeyPoint> &Keypoints,cv::Rect &box, int minKeypoints);
+
+//  - Function that processes one image (input:  one image path,
+//                                               full descriptor list of one object,
+//                                               mode - choose which box,
+//					                             minimal keypoints; 
+//                                               rect object)
+void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int minKeypoints , cv::Rect &objectDeteced,std::vector<cv::KeyPoint> &goodKeypoints);
 
 
 

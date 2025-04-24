@@ -16,6 +16,8 @@
 
  
 
+
+
 int main(int argc, char** argv)
 {
     //Collect all filenames from a given directory
@@ -28,55 +30,32 @@ int main(int argc, char** argv)
     cv::Mat descriptorList;
     computeFullDescriptorList(pathListSugarModels, pathListSugarModels, descriptorList);
 
+    
 
     //Load one test image and compute its keypoints
-    cv::Mat testImage;
-    cv::Mat descriptorsTest;
-    std::vector<cv::KeyPoint> keypointsTest;
+
+    cv::Rect objectDeteced,objectDeteced1,objectDeteced2;
     std::string imagePath = pathListSugarTest[3];
-    loadInput(testImage, imagePath);
-    computeFeaturesSingleImage(testImage, descriptorsTest, keypointsTest);
-    
-
-    //Match the features of the image to those of the model
-    std::vector<std::vector<cv::DMatch>> matches;
-    matchFromDescriptors(descriptorsTest, descriptorList, matches);
-
-    
-    //Filter only good matches, using the ratio test
-    std::vector<cv::DMatch> goodMatches;
-    ratioTest(matches, goodMatches);
-
-
-    //Select all keypoints of the test image corresponding to good matches
     std::vector<cv::KeyPoint> goodKeypoints;
-    keypointSelection(goodKeypoints, goodMatches, keypointsTest);
 
-
-    //Find position of rectangl that fit most keypoints 
-    cv::Rect bestBox;
-    fitBox(testImage,goodKeypoints,300,150,bestBox);
+    //Find position of rectangl that fit most keypoints
+    runDetection(imagePath, descriptorList, 0, 12 , objectDeteced, goodKeypoints);
     //Find position of rectangl that fit most keypoints and centre the rectangle around the keypoints 
-    cv::Rect bestBoxCentred;
-    fitBoxCentred(testImage,goodKeypoints,300,150,bestBoxCentred);
-    //Find all the object based on canny edge detection 
-    std::vector<cv::Rect> boxes;
-    detectAllObjects(testImage,boxes, 100000);
-    //Find the rectangle that fits the most keypoints 
-    cv::Rect bestBox2;
-    findBestBox(goodKeypoints,boxes, bestBox2);
-
-
-
+    runDetection(imagePath, descriptorList, 1, 12 , objectDeteced1, goodKeypoints);
+    //Find all the object based on canny edge detection and find the object containing the most keypoints
+    runDetection(imagePath, descriptorList, 2, 12 , objectDeteced2, goodKeypoints);
+    
     //Draw the good keypoints
+    cv::Mat testImage;
+    loadInput(testImage, imagePath);
     cv::Mat outImage;
     cv::Scalar color( 0, 0, 255 );
     cv::drawKeypoints(testImage, goodKeypoints, outImage, color);
 
     //Draw the Boxes 
-    cv::rectangle(outImage, bestBox, cv::Scalar(0, 0, 255),2);
-    cv::rectangle(outImage, bestBox2, cv::Scalar(0, 255, 0),2);
-    cv::rectangle(outImage, bestBoxCentred, cv::Scalar(255, 0, 0),2);
+    cv::rectangle(outImage, objectDeteced, cv::Scalar(0, 0, 255),2);
+    cv::rectangle(outImage, objectDeteced1, cv::Scalar(0, 255, 0),2);
+    cv::rectangle(outImage,objectDeteced2, cv::Scalar(255, 0, 0),2);
 
     //Open image
     openImage(outImage,1,"Test");
