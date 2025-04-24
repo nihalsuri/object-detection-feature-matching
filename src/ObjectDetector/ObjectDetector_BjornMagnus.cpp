@@ -144,7 +144,7 @@ void boxDecider(std::vector<cv::KeyPoint> &Keypoints,cv::Rect &box, int minKeypo
 }
 
 
-void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int minKeypoints , cv::Rect &objectDeteced,std::vector<cv::KeyPoint> &goodKeypoints){
+void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int minKeypoints , cv::Rect &objectDeteced,std::vector<cv::KeyPoint> &goodKeypoints, const double sigma, const double cutOffRatio){
    
     cv::Mat Image;
     cv::Mat descriptorsTest;
@@ -152,7 +152,7 @@ void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int m
 
     //Load one test image and compute its keypoints
     loadInput(Image, imagePath);
-    computeFeaturesSingleImage(Image, descriptorsTest, keypointsTest);
+    computeFeaturesSingleImage(Image, descriptorsTest, keypointsTest, sigma);
     
     //Match the features of the image to those of the model
     std::vector<std::vector<cv::DMatch>> matches;
@@ -160,7 +160,7 @@ void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int m
 
     //Filter only good matches, using the ratio test
     std::vector<cv::DMatch> goodMatches;
-    ratioTest(matches, goodMatches);
+    ratioTest(matches, goodMatches, cutOffRatio);
 
 
     //Select all keypoints of the test image corresponding to good matches
