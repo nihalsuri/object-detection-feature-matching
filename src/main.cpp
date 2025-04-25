@@ -9,15 +9,13 @@
 
 #include "Utils/inputProcessing_MaxPries.h"
 #include "Utils/OutputProcessing_BjornMagnus.h"
+#include "Utils/outputProcessing_NihalSuri.h"
 #include "ObjectDetector/featureDetection_MaxPries.h"
 #include "FeatureMatcher/featureMatching_MaxPries.h"
 #include "ObjectDetector/ObjectDetector_BjornMagnus.h"
 
 
  
-
-
-
 int main(int argc, char** argv)
 {
     //Collect all filenames from a given directory
@@ -34,7 +32,7 @@ int main(int argc, char** argv)
 
     //Load one test image and compute its keypoints
     cv::Rect objectDeteced,objectDeteced1,objectDeteced2;
-    std::string imagePath = pathListSugarTest[3];
+    std::string imagePath = pathListSugarTest[8];
     std::vector<cv::KeyPoint> goodKeypoints;
     double sigma = 1;
     double cutOffRatio = 0.77;
@@ -62,7 +60,20 @@ int main(int argc, char** argv)
     openImage(outImage,1,"Test");
 
     //Save image with original name + _output.jpg saved to given path 
-    saveImage(outImage,imagePath,"../data/Output/","_output.jpg");
+    saveImage(outImage,imagePath,"../results/images/","_output.jpg");
+
+    // write to files for each bounding box method, choose one of them in the end
+    std::vector<cv::Rect>mode0;
+    mode0.push_back(objectDeteced); 
+    writeCoordinates(mode0, imagePath, "../results/coordinates/mode0/", "_output"); 
+
+    std::vector<cv::Rect>mode1;
+    mode1.push_back(objectDeteced1); 
+    writeCoordinates(mode1, imagePath, "../results/coordinates/mode1/", "_output");
+
+    std::vector<cv::Rect>mode2;
+    mode2.push_back(objectDeteced2); 
+    writeCoordinates(mode2, imagePath, "../results/coordinates/mode2/", "_output");
 
     return 0;
 }
