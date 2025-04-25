@@ -18,14 +18,6 @@
 void openImage(cv::Mat &img,float Resize, std::string name);
 
 
-//Save image given origianl path, path where it will be saved and name 
-// Inputs:
-// img          -Image to be saved
-// imagePath    -Path to original iamge
-// savePath     -Path to be saved in 
-// addedname    -String that get added to the original name when saved 
-void saveImage(cv::Mat &img, std::string imagePath,std::string savePath,std::string addedname);
-
 
 
 
