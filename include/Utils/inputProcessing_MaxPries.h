@@ -22,6 +22,16 @@ void loadInput(cv::Mat &img, const std::string path, bool grayscale=false);
 //
 // Output:
 // pathList - a vector containing strings of all specified file-paths
-std::vector<std::string> fetchFilenames(const std::string sourceDir, const std::string ending);
+std::vector<std::string> fetchFilepaths(const std::string sourceDir, const std::string ending);
+
+
+// Loads the training and test data into provided containers, all inputs are targets
+// Inputs:
+// allModels - will contain one vector of all file-paths for each object's models
+// allMasks  - will contain one vector of all file-paths for each object's masks
+// allTests  - will contain all file-paths for the test images
+void loadTrainTestData(std::vector<std::vector<std::string>> &allModels,
+    std::vector<std::vector<std::string>> &allMasks,
+    std::vector<std::string> &allTests);
 
 #endif
