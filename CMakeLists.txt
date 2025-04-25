@@ -22,6 +22,7 @@ set(FEATURE_MATCHER
 set(OBJECT_DETECTOR
     src/ObjectDetector/featureDetection_MaxPries.cpp
     src/ObjectDetector/ObjectDetector_BjornMagnus.cpp
+    src/ObjectDetector/objectDetectorAll_MaxPries.cpp
 )
 
 set(UTILS
