@@ -13,12 +13,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add the executable and include source files from multiple directories
 set(EVALUATOR
-    src/Evaluator/Evaluator.cpp
 )
 
 set(FEATURE_MATCHER
     src/FeatureMatcher/featureMatching_MaxPries.cpp
-    src/FeatureMatcher/FeatureMatcher.cpp
 )
 
 set(OBJECT_DETECTOR
@@ -28,8 +26,8 @@ set(OBJECT_DETECTOR
 
 set(UTILS
     src/Utils/inputProcessing_MaxPries.cpp
-    src/Utils/Utils.cpp
     src/Utils/OutputProcessing_BjornMagnus.cpp
+    src/Utils/outputProcessing_NihalSuri.cpp
 )
 
 add_executable(CV_Midterm 
