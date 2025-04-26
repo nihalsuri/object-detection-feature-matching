@@ -8,15 +8,17 @@
 #include "ObjectDetector/ObjectDetector_BjornMagnus.h"
 
 
-
 void runDetectionAllImages(const std::vector<std::vector<std::string>> &allModels, 
     const std::vector<std::vector<std::string>> &allMasks, 
     const std::vector<std::string> &allTests, 
-    int mode, int minKeypoints, double sigma, double cutOffRatio, bool logImages)
+    int mode, int minKeypoints, double sigma, double cutOffRatio, 
+    bool logImages, std::string savePath)
 {
     // Compute the descriptors for all three objects 
     // and store them in a vector ({sugar, mustard, drill})
     std::vector<cv::Mat> allDescriptors(3);
+    const std::string& coordinatesPath =  savePath + "/coordinates/"; 
+    const std::string& descriptorImagePath =  savePath + "/images/"; 
 
     
     for (int idxObj=0; idxObj<allDescriptors.size(); idxObj++)
@@ -45,8 +47,8 @@ void runDetectionAllImages(const std::vector<std::vector<std::string>> &allModel
                 cv::drawKeypoints(img, goodKeypoints[idxObj], img, color[idxObj]);
                 cv::rectangle(img, targetBoxes[idxObj], color[idxObj],2);
             }
-            saveImage(img,imagePath,"../results/images/","_output.jpg");
+            saveImage(img,imagePath, descriptorImagePath ,"_output.jpg");
         }
-       writeCoordinates(targetBoxes, imagePath, "../results/coordinates", "_output");
+       writeCoordinates(targetBoxes, imagePath, coordinatesPath , "_output");
     }
 }

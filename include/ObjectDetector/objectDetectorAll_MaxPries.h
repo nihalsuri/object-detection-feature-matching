@@ -18,10 +18,12 @@
 // logImages   - optional, if true, the detected keypoints that passed the
 //               ratio test and the found boxes are drawn on the test images
 //               and they are saved in the filesystem
+// savePath    - Path to be saved in
 
 void runDetectionAllImages(const std::vector<std::vector<std::string>> &allModels, 
     const std::vector<std::vector<std::string>> &allMasks, 
     const std::vector<std::string> &allTests, 
-    int mode, int minKeypoints, double sigma, double cutOffRatio, bool logImages=false);
+    int mode, int minKeypoints, double sigma, double cutOffRatio, 
+    bool logImages=false, std::string savePath="../results");
 
 #endif
