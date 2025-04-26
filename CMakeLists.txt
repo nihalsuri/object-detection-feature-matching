@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add the executable and include source files from multiple directories
 set(EVALUATOR
+    src/Evaluator/evaluator_NihalSuri.cpp
 )
 
 set(FEATURE_MATCHER
