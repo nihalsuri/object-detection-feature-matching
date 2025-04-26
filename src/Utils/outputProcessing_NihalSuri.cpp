@@ -28,9 +28,12 @@ void saveImage(cv::Mat& img,
     // Save the image to the specified path
     try {
         cv::imwrite(newFilename.string(), img);
+        std::cout << "Image saved to: " << newFilename << std::endl;
+        
     } catch (const cv::Exception& e) {
         std::cerr << "Error saving image: " << e.what() << std::endl;
     }
+
 }
 
 
