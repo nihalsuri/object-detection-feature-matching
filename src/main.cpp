@@ -4,10 +4,7 @@
 
 #include "Utils/inputProcessing_MaxPries.h"
 #include "ObjectDetector/objectDetectorAll_MaxPries.h"
-
-
- 
-
+#include "Evaluator/evaluator_NihalSuri.h"
 
 
 int main(int argc, char** argv)
@@ -19,11 +16,12 @@ int main(int argc, char** argv)
     
 
     int mode = 0;
-    int minKeypoints = 10;
+    int minKeypoints = 7;
     double sigma = 1;
     double cutOffRatio = 0.78;
     bool logImages = true;
-    runDetectionAllImages(allModels, allMasks, allTests, mode, minKeypoints, sigma, cutOffRatio, logImages);
+    std::string savePath = "../results";
+    runDetectionAllImages(allModels, allMasks, allTests, mode, minKeypoints, sigma, cutOffRatio, logImages, savePath);
 
     /*
     int bestMode = 0;
@@ -62,6 +60,7 @@ int main(int argc, char** argv)
         }
     }
     */
+    performanceMetrics("../results");
 
     return 0;
 }
