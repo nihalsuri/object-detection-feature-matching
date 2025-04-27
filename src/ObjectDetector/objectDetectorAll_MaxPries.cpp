@@ -1,10 +1,11 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/features2d.hpp>
+#include <iostream>
 
 
 #include "Utils/inputProcessing_MaxPries.h"
 #include "Utils/outputProcessing_NihalSuri.h"
-#include "ObjectDetector/featureDetection_MaxPries.h"
+#include "FeatureDetectorMatcher/featureDetection_MaxPries.h"
 #include "ObjectDetector/ObjectDetector_BjornMagnus.h"
 
 
@@ -12,7 +13,7 @@ void runDetectionAllImages(const std::vector<std::vector<std::string>> &allModel
     const std::vector<std::vector<std::string>> &allMasks, 
     const std::vector<std::string> &allTests, 
     int mode, int minKeypoints, double sigma, double cutOffRatio, 
-    bool logImages, std::string savePath)
+    int boxHeight, int boxWidth, bool logImages, std::string savePath, int detectorMode)
 {
     // Compute the descriptors for all three objects 
     // and store them in a vector ({sugar, mustard, drill})
@@ -22,8 +23,8 @@ void runDetectionAllImages(const std::vector<std::vector<std::string>> &allModel
 
     
     for (int idxObj=0; idxObj<allDescriptors.size(); idxObj++)
-        computeFullDescriptorList(allModels[idxObj], allMasks[idxObj], allDescriptors[idxObj]);
-
+        computeFullDescriptorList(allModels[idxObj], allMasks[idxObj], allDescriptors[idxObj], detectorMode);
+    
     
 
     // Loop over all images
@@ -33,7 +34,9 @@ void runDetectionAllImages(const std::vector<std::vector<std::string>> &allModel
         std::vector<std::vector<cv::KeyPoint>> goodKeypoints(3);
         std::vector<cv::Rect> targetBoxes(3);
         for (int idxObj=0; idxObj<allDescriptors.size(); idxObj++)
-            runDetection(imagePath, allDescriptors[idxObj], mode, minKeypoints, targetBoxes[idxObj], goodKeypoints[idxObj], sigma, cutOffRatio);
+            runDetection(imagePath, allDescriptors[idxObj], mode, minKeypoints, 
+                         targetBoxes[idxObj], goodKeypoints[idxObj], sigma,
+                         cutOffRatio, boxHeight, boxWidth, detectorMode);
 
         
         if (logImages)

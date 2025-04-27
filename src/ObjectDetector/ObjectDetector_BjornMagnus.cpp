@@ -144,15 +144,20 @@ void boxDecider(std::vector<cv::KeyPoint> &Keypoints,cv::Rect &box, int minKeypo
 }
 
 
-void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int minKeypoints , cv::Rect &objectDeteced,std::vector<cv::KeyPoint> &goodKeypoints, const double sigma, const double cutOffRatio){
+void runDetection(std::string imagePath, cv::Mat &descriptorList, int mode,
+                  int minKeypoints, cv::Rect &objectDeteced,
+                  std::vector<cv::KeyPoint> &goodKeypoints,
+                  double sigma, double cutOffRatio, int boxHeight, int boxWidth,
+                  int detectorMode){
    
     cv::Mat Image;
     cv::Mat descriptorsTest;
     std::vector<cv::KeyPoint> keypointsTest;
 
+
     //Load one test image and compute its keypoints
     loadInput(Image, imagePath);
-    computeFeaturesSingleImage(Image, descriptorsTest, keypointsTest, sigma);
+    computeFeaturesSingleImage(Image, descriptorsTest, keypointsTest, sigma, detectorMode);
     
     //Match the features of the image to those of the model
     std::vector<std::vector<cv::DMatch>> matches;
@@ -169,11 +174,11 @@ void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int m
     cv::Rect bestBox;
     if(mode==1){
     //Find position of rectangl that fit most keypoints 
-    fitBox(Image,goodKeypoints,300,150,bestBox);
+    fitBox(Image,goodKeypoints,boxHeight,boxWidth,bestBox);
     }
     else if(mode==2){
     //Find position of rectangl that fit most keypoints and centre the rectangle around the keypoints 
-    fitBoxCentred(Image,goodKeypoints,300,150,bestBox);
+    fitBoxCentred(Image,goodKeypoints,boxHeight,boxWidth,bestBox);
     }
     else {
     //Find all the object based on canny edge detection 
