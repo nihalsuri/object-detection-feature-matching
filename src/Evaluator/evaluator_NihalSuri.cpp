@@ -1,5 +1,6 @@
 #include "Evaluator/evaluator_NihalSuri.h"
 #include "Utils/inputProcessing_MaxPries.h"
+#include "ObjectDetector/objectDetectorAll_MaxPries.h"
 
 
 std::pair<std::string, BoundingBox> parseLine(const std::string& line) {
@@ -43,7 +44,7 @@ float calculateIoU(const BoundingBox& box1, const BoundingBox& box2) {
 }
 
 
-void performanceMetrics(const std::string& resultsPath){
+std::vector<float> performanceMetrics(const std::string& resultsPath, bool returnValue){
     // Provide mIoU for each object category 
     // Provide avergae mIoU
     
@@ -171,11 +172,11 @@ void performanceMetrics(const std::string& resultsPath){
     float totalMeanIoU = 0.0f;
     int validCategories = 0;
     
-    std::cout << "\nMean IoU per category:" << std::endl;
+    if (!returnValue) std::cout << "\nMean IoU per category:" << std::endl;
     for (const auto& [objectType, sum] : iouSums) {
         if (iouCounts[objectType] > 0) {
             float meanIoU = sum / iouCounts[objectType];
-            std::cout << objectType << ": " << meanIoU << std::endl;
+            if (!returnValue) std::cout << objectType << ": " << meanIoU << std::endl;
             totalMeanIoU += meanIoU;
             validCategories++;
         } else {
@@ -184,14 +185,16 @@ void performanceMetrics(const std::string& resultsPath){
     }
     
     // Calculate overall mean IoU across all categories
+    float overallMeanIoU = 0;
     if (validCategories > 0) {
-        std::cout << "\nOverall Mean IoU: " << totalMeanIoU / validCategories << std::endl;
+        overallMeanIoU = totalMeanIoU / validCategories;
+        if (!returnValue) std::cout << "\nOverall Mean IoU: " << overallMeanIoU << std::endl;
     } else {
         std::cout << "\nNo valid detections found in any category." << std::endl;
     }
 
     // Calculate and display detection accuracy for each object category
-    std::cout << "\nDetection Accuracy (IoU > 0.5) per category:" << std::endl;
+    if (!returnValue) std::cout << "\nDetection Accuracy (IoU > 0.5) per category:" << std::endl;
     int totalTP = 0;
     int totalInstancesAll = 0;
     
@@ -202,21 +205,105 @@ void performanceMetrics(const std::string& resultsPath){
         
         if (instances > 0) {
             float accuracy = static_cast<float>(tp) / instances;
-            std::cout << objectType << ": " << accuracy << " (" << tp << "/" << instances << ")" << std::endl;
+            if (!returnValue) std::cout << objectType << ": " << accuracy << " (" << tp << "/" << instances << ")" << std::endl;
         } else {
-            std::cout << objectType << ": No instances found" << std::endl;
+            if (!returnValue) std::cout << objectType << ": No instances found" << std::endl;
         }
     }
     
     // Calculate overall detection accuracy
+    float overallAccuracy;
     if (totalInstancesAll > 0) {
-        float overallAccuracy = static_cast<float>(totalTP) / totalInstancesAll;
-        std::cout << "\nOverall Detection Accuracy: " << overallAccuracy 
-                  << " (" << totalTP << "/" << totalInstancesAll << ")" << std::endl;
+        overallAccuracy = static_cast<float>(totalTP) / totalInstancesAll;
+        if (!returnValue) {std::cout << "\nOverall Detection Accuracy: " << overallAccuracy 
+                  << " (" << totalTP << "/" << totalInstancesAll << ")" << std::endl;}
     } else {
         std::cout << "\nNo instances found across all categories." << std::endl;
     }
 
+    if (returnValue)
+        return std::vector<float>{overallMeanIoU, overallAccuracy};
+    else
+        return {};
 
     
+}
+
+
+
+
+
+void evaluateBestParameters(int mode, std::string savePath,
+                            int startKeypoints, int stopKeypoints,
+                            double startSigma, double stopSigma,
+                            double startRatio, double stopRatio,
+                            int startHeight, int stopHeight,
+                            int boxWidth, int detectorMode)
+{
+    int bestMinKeypointsIoU, bestMinKeypointsMatches;
+    double bestSigmaIoU, bestSigmaMatches;
+    double bestCutOffRatioIoU, bestCutOffRatioMatches;
+    int bestBoxHeightIoU, bestBoxHeightMatches;
+
+    double bestScoreIoU = 0;
+    double bestScoreMatches = 0;
+
+    std::vector<std::vector<std::string>> allModels, allMasks;
+    std::vector<std::string> allTests;
+    loadTrainTestData(allModels, allMasks, allTests);
+
+    for (int boxHeight=startHeight; boxHeight<=stopHeight; boxHeight+=25)
+    {
+        for (double sigma=startSigma; sigma<=stopSigma; sigma+=0.1)
+        {
+            for (int minKeypoints=startKeypoints; minKeypoints<=stopKeypoints; minKeypoints+=1)
+            {
+                for (double cutOffRatio=startRatio; cutOffRatio<=stopRatio; cutOffRatio+=0.01)
+                {
+                    runDetectionAllImages(allModels, allMasks, allTests, mode, minKeypoints, sigma, cutOffRatio, boxHeight, boxWidth, false, savePath, detectorMode);
+                    std::vector<float> scores = performanceMetrics(savePath, true);
+
+                    if (scores[0] > bestScoreIoU)
+                    {
+                        bestScoreIoU = scores[0];
+                        bestMinKeypointsIoU = minKeypoints;
+                        bestSigmaIoU = sigma;
+                        bestCutOffRatioIoU = cutOffRatio;
+                        bestBoxHeightIoU = boxHeight;
+
+                        //std::cout << "Current Best Score IoU:     " << bestScoreIoU <<std::endl;
+                        //std::cout << "Current Best Keypoints IoU: " << bestMinKeypointsIoU <<std::endl;
+                        //std::cout << "Current Best Sigma IoU:     " << bestSigmaIoU <<std::endl;
+                        //std::cout << "Current Best Ratio IoU:     " << bestCutOffRatioIoU <<std::endl;
+                        //std::cout << "Current Best BoxHeight IoU: " << bestBoxHeightIoU <<std::endl;
+                    }
+                    if (scores[1] > bestScoreMatches)
+                    {
+                        bestScoreMatches = scores[1];
+                        bestMinKeypointsMatches = minKeypoints;
+                        bestSigmaMatches = sigma;
+                        bestCutOffRatioMatches = cutOffRatio;
+                        bestBoxHeightMatches = boxHeight;
+
+                        //std::cout << "Current Best Score Matches:     " << bestScoreMatches <<std::endl;
+                        //std::cout << "Current Best Keypoints Matches: " << bestMinKeypointsMatches <<std::endl;
+                        //std::cout << "Current Best Sigma Matches:     " << bestSigmaMatches <<std::endl;
+                        //std::cout << "Current Best Ratio Matches:     " << bestCutOffRatioMatches <<std::endl;
+                        //std::cout << "Current Best BoxHeight Matches: " << bestBoxHeightMatches <<std::endl;
+                    }
+                }
+            }
+        }
+    }   
+    std::cout << "Best Score IoU:     " << bestScoreIoU <<std::endl;
+    std::cout << "Best Keypoints IoU: " << bestMinKeypointsIoU <<std::endl;
+    std::cout << "Best Sigma IoU:     " << bestSigmaIoU <<std::endl;
+    std::cout << "Best Ratio IoU:     " << bestCutOffRatioIoU <<std::endl;
+    std::cout << "Best BoxHeight IoU: " << bestBoxHeightIoU <<std::endl;
+    std::cout << "\n";
+    std::cout << "Best Score Matches:     " << bestScoreMatches <<std::endl;
+    std::cout << "Best Keypoints Matches: " << bestMinKeypointsMatches <<std::endl;
+    std::cout << "Best Sigma Matches:     " << bestSigmaMatches <<std::endl;
+    std::cout << "Best Ratio Matches:     " << bestCutOffRatioMatches <<std::endl;
+    std::cout << "Best BoxHeight Matches: " << bestBoxHeightMatches <<std::endl;
 }
