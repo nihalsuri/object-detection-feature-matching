@@ -76,7 +76,7 @@ void writeCoordinates(const std::vector<cv::Rect>& rect,
     }
         
     // Create the output filename with the added name
-    std::string outputFilename = savePath + "/" + baseFilename + addedName + ".txt";
+    std::string outputFilename = savePath + baseFilename + addedName + ".txt";
 
     // Open the output file
     std::ofstream outFile(outputFilename);
