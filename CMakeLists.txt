@@ -16,12 +16,12 @@ set(EVALUATOR
     src/Evaluator/evaluator_NihalSuri.cpp
 )
 
-set(FEATURE_MATCHER
-    src/FeatureMatcher/featureMatching_MaxPries.cpp
+set(FEATURE_DETECTOR_MATCHER
+    src/FeatureDetectorMatcher/featureDetection_MaxPries.cpp
+    src/FeatureDetectorMatcher/featureMatching_MaxPries.cpp
 )
 
 set(OBJECT_DETECTOR
-    src/ObjectDetector/featureDetection_MaxPries.cpp
     src/ObjectDetector/ObjectDetector_BjornMagnus.cpp
     src/ObjectDetector/objectDetectorAll_MaxPries.cpp
 )
@@ -35,7 +35,7 @@ set(UTILS
 add_executable(CV_Midterm 
     src/main.cpp
     ${EVALUATOR}
-    ${FEATURE_MATCHER}
+    ${FEATURE_DETECTOR_MATCHER}
     ${OBJECT_DETECTOR}
     ${UTILS}
 )
