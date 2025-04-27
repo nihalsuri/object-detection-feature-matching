@@ -18,6 +18,8 @@
 
 ## **Build Instructions**
 ```
+# To start the container on the VLAB env
+start_opencv
 # Create the build directory in the root of the project 
 mkdir build
 cd build
