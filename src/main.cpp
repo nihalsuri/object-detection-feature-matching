@@ -9,58 +9,47 @@
 
 int main(int argc, char** argv)
 {
-
+    
     std::vector<std::vector<std::string>> allModels, allMasks;
     std::vector<std::string> allTests;
     loadTrainTestData(allModels, allMasks, allTests);
-    
 
-    int mode = 0;
-    int minKeypoints = 7;
-    double sigma = 1;
-    double cutOffRatio = 0.78;
+    
+    // Best parameters SIFT
+    int mode = 2;
+    int minKeypoints = 10;       // up to 10 to balance score and flase positives
+    double sigma = 0.8;
+    double cutOffRatio = 0.80;   // 0.80 to balance score and flase positives (best score at 0.83)
+    int boxHeight = 225;
+    int boxWidth = 150;
+
     bool logImages = true;
     std::string savePath = "../results";
-    runDetectionAllImages(allModels, allMasks, allTests, mode, minKeypoints, sigma, cutOffRatio, logImages, savePath);
-
+    runDetectionAllImages(allModels, allMasks, allTests, mode, minKeypoints, sigma, cutOffRatio, boxHeight, boxWidth, logImages, savePath, 0);
+    performanceMetrics(savePath);
+    
+    
     /*
-    int bestMode = 0;
-    int bestMinKeypoints = 9;
-    double bestSigma = 1;
-    double bestCutOffRatio = 0.73;
-    double bestScore = 0;
+    // Fixed size centerd box, fixed keypoints to 10. Only vary sigma and ratio
+    int mode = 2;
+    int boxWidth = 150;
+    int boxHeight = 225;
+    std::string savePath = "../results";
+    int startKeypoints = 10, stopKeypoints = 10;
 
-    //NOTE: THIS WILL RUN THE WHOLE THING 216 TIMES!!
-    for (int mode=bestMode; mode<=2; mode++)
-    {
-        for (int minKeypoints=bestMinKeypoints; minKeypoints<=15; minKeypoints+=2)
-        {
-            for (double sigma=vestSigma; sigma<=2; sigma+=0.5)
-            {
-                for (double cutOffRatio=bestCutOffRatio; cutOffRatio<=0.78; cutOffRatio+=0.01)
-                {
-                    runDetectionAllImages(allModels, allMasks, allTests, mode, minKeypoints, sigma, cutOffRatio, false);
-                    currentScore = computeScoreMetric
+    double startSigma = 0.5, stopSigma = 1.5;
+    double startRatio = 0.70, stopRatio = 0.85;
 
-                    if (currentScore > bestScore)
-                    {
-                        bestScore = currentScore;
-                        bestMode = mode;
-                        bestMinKeypoints = minKeypoints;
-                        bestSigma = sigma;
-                        bestCutOffRatio = cutOffRatio;
-                    }
-                }
-                std::cout << "Current Best Score:     " << bestScore <<std::endl;
-                std::cout << "Current Best Mode:      " << bestMode <<std::endl;
-                std::cout << "Current Best Keypoints: " << bestMode <<std::endl;
-                std::cout << "Current Best Sigma:     " << bestMode <<std::endl;
-                std::cout << "Current Best Ratio:     " << bestMode <<std::endl;
-            }
-        }
-    }
+    std::cout << "SURF:";
+    evaluateBestParameters(mode, savePath, startKeypoints, stopKeypoints, startSigma, stopSigma, 
+                           startRatio, stopRatio, boxHeight, boxHeight, boxWidth, 1);
+    std::cout << "\n\nORB:";
+    evaluateBestParameters(mode, savePath, startKeypoints, stopKeypoints, startSigma, stopSigma, 
+                           startRatio, stopRatio, boxHeight, boxHeight, boxWidth, 2);
+    std::cout << "\n\nAKAZE:";
+    evaluateBestParameters(mode, savePath, startKeypoints, stopKeypoints, startSigma, stopSigma, 
+                           startRatio, stopRatio, boxHeight, boxHeight, boxWidth, 3);
     */
-    performanceMetrics("../results");
 
     return 0;
 }
