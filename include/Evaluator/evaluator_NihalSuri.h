@@ -42,6 +42,7 @@ float calculateIoU(const BoundingBox& box1, const BoundingBox& box2);
 std::vector<float> performanceMetrics(const std::string& resultsPath, bool returnValue = false);
 
 // Evaluate different parameter combinations
+// NOTE: Depending on the parameter ranges, this function might run exremely long
 // Inputs:
 // mode           - the mode to be used in testing
 // savePath       - path to target directory for result-text file
