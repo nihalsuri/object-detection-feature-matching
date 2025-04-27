@@ -39,12 +39,29 @@ float calculateIoU(const BoundingBox& box1, const BoundingBox& box2);
 // Calculate mean intersection over union and detection accurracy given the path of the text files
 // Inputs:
 // resultsPath   -Path of the annotation results
-void performanceMetrics(const std::string& resultsPath);
+std::vector<float> performanceMetrics(const std::string& resultsPath, bool returnValue = false);
 
-
-
-
-
+// Evaluate different parameter combinations
+// Inputs:
+// mode           - the mode to be used in testing
+// savePath       - path to target directory for result-text file
+// startKeypoints - min parameter for minKeypoints to be tested
+// stopKeypoints  - max parameter for minKeypoints to be tested
+// startSigma     - min parameter for Sigma to be tested
+// stopSigma      - max parameter for Sigma to be tested
+// startRatio     - min parameter for cutOffRatio to be tested
+// stopRatio      - max parameter for cutOffRatio to be tested
+// startHeight    - min parameter for boxHeight to be tested, optional
+// stopHeight     - max parameter for boxHeight to be tested, optional
+// boxWidth       - boxWidth to be used in testing, constant in testing optional
+//                  If no box dimensions are chosen, the best ones are used to 
+//                  reduce loop time
+void evaluateBestParameters(int mode, std::string savePath,
+    int startKeypoints, int stopKeypoints,
+    double startSigma, double stopSigma,
+    double startRatio, double stopRatio,
+    int startHeight=225, int stopHeight=225,
+    int boxwidth=150, int detectorMode=0);
 
 
 #endif
