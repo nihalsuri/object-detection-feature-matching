@@ -3,6 +3,7 @@
 <details>
   <summary><strong> Table of Contents</strong></summary>
 
+- [Build Instructions](#build-instructions)
 - [Code Design and Style Guide](#code-design-and-style-guide)
 - [Objective](#objective)
   - [Inputs](#inputs)
@@ -12,9 +13,25 @@
   - [Evaluation Metrics](#evaluation-metrics)
   - [Project Requirements](#project-requirements)
   - [Submission Checklist](#submission-checklist)
-- [Solution Pipeline](#solution-pipeline)
 
 </details>
+
+## **Build Instructions**
+```
+# Create the build directory in the root of the project 
+mkdir build
+cd build
+
+# Configure the project using CMake
+cmake ..
+
+# Compile the project
+make
+
+# Run the executable
+./CV_Midterm
+```
+The above instructions will create a `/results` directory with two subdirectories one for the `/images` and the other for the `/coordinates` of the bounding boxs computed by the algorithm. 
 
 ## **Code Design and Style Guide**
 *All contributors swear to follow these points with the utmost care:* 
@@ -103,31 +120,6 @@ Number of correct detections (IoU > 0.5 with ground truth)
 
 ---
 
-## **Solution Pipeline**
-1. Data Preperation
-
-2. **Feature Detection on Models/Training Data** (using SIFT, SURF ...)
-   - ⇒ List of Feature Vectors
-
-3. **Feature Detection on the whole image** (using the same technique)
-
-4. **For all features in the image**
-   - Find the best match in the training data, i.e., the nearest neighbor in feature space
-   - Qualify the match by normalized distance:  
-     $$d_{i,\text{norm}} = \frac{d_i}{\max(d_i)}$$
-   - Perfect match:  
-     $$d_{i,\text{norm}} = 0$$  
-     Worst match:  
-     $$d_{i,\text{norm}} = 1$$
-   - Note: This only grades the matches relative to each other. If all matches are "good" in absolute terms, one will still be the worst.
-
-5. **Find the best rectangle**
-   - **Sliding window approach**:
-     - Slide the window, take all matches within that window and calculate:
-       $$\text{Confidence} = \sum (1 - d_{i,\text{norm}})$$
-     - Choose the window with the highest confidence score as the "winner" → Box to determine object position
-     - Threshold the confidence value (e.g., $\text{Confidence} \geq 500$) to determine if the object is actually present  
-       ⇒ **Values to decide**: Threshold on confidence for deciding if the winner is the object
 
 
 
