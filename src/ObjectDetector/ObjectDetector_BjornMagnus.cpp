@@ -1,7 +1,7 @@
 #include "ObjectDetector/ObjectDetector_BjornMagnus.h"
 
 
-void fitBox(const cv::Mat &img, std::vector<cv::KeyPoint> &Keypoints, const int boxWidth, const int boxHeight, cv::Rect &bestBox){
+void DOslidingBox(const cv::Mat &img, std::vector<cv::KeyPoint> &Keypoints, const int boxWidth, const int boxHeight, cv::Rect &bestBox){
     cv::Rect leadingBox;
     int bestCount = 0;
     int featureCountH, featureCountV; 
@@ -37,7 +37,7 @@ void fitBox(const cv::Mat &img, std::vector<cv::KeyPoint> &Keypoints, const int 
 }
 
 
-void fitBoxCentred(const cv::Mat &img, std::vector<cv::KeyPoint> &Keypoints, const int boxWidth, const int boxHeight, cv::Rect &bestBoxCentred){
+void DOcenteredBox(const cv::Mat &img, std::vector<cv::KeyPoint> &Keypoints, const int boxWidth, const int boxHeight, cv::Rect &bestBoxCentred){
     cv::Rect leadingBox;
     int bestCount = 0;
     int featureCountH, featureCountV; 
@@ -91,7 +91,7 @@ void fitBoxCentred(const cv::Mat &img, std::vector<cv::KeyPoint> &Keypoints, con
 }
 
 
-void detectAllObjects(const cv::Mat &inputImg,std::vector<cv::Rect> &detectedBoxes, int maxArea = 100000) {
+void DOconturs(const cv::Mat &inputImg,std::vector<cv::Rect> &detectedBoxes, int maxArea = 100000) {
     cv::Mat edges, img_gray;
     std::vector<std::vector<cv::Point>> contours;
     cv::cvtColor(inputImg, img_gray, cv::COLOR_BGR2GRAY);
@@ -107,7 +107,7 @@ void detectAllObjects(const cv::Mat &inputImg,std::vector<cv::Rect> &detectedBox
     }
 }
 
-void findBestBox(std::vector<cv::KeyPoint> &Keypoints,std::vector<cv::Rect> boxes,cv::Rect &bestBox){
+void fitBestBox(std::vector<cv::KeyPoint> &Keypoints,std::vector<cv::Rect> boxes,cv::Rect &bestBox){
     cv::Rect leadingBox;
     int featureCount = 0; 
     int bestCount = 0;
@@ -174,18 +174,18 @@ void runDetection(std::string imagePath, cv::Mat &descriptorList, int mode,
     cv::Rect bestBox;
     if(mode==1){
     //Find position of rectangl that fit most keypoints 
-    fitBox(Image,goodKeypoints,boxHeight,boxWidth,bestBox);
+    DOslidingBox(Image,goodKeypoints,boxHeight,boxWidth,bestBox);
     }
     else if(mode==2){
     //Find position of rectangl that fit most keypoints and centre the rectangle around the keypoints 
-    fitBoxCentred(Image,goodKeypoints,boxHeight,boxWidth,bestBox);
+    DOcenteredBox(Image,goodKeypoints,boxHeight,boxWidth,bestBox);
     }
     else {
     //Find all the object based on canny edge detection 
     std::vector<cv::Rect> boxes;
-    detectAllObjects(Image,boxes, 100000);
+    DOconturs(Image,boxes, 100000);
     //Find the rectangle that fits the most keypoints 
-    findBestBox(goodKeypoints,boxes, bestBox);
+    fitBestBox(goodKeypoints,boxes, bestBox);
     }
 
     //Decide if the box actually is the object or a false positive 
