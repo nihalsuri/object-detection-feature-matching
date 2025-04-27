@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     // Best parameters SIFT
     int detector = 0;                       // 0:SIFT, 1:SURF, 2:ORB, 3:AKAZE
     int mode = 2;                           // The type of box-fitting
-    int minKeypoints = 10;                  // Min number of Keypoints to draw the box
+    int minKeypoints = 20;                  // Min number of Keypoints to draw the box
     double sigma = 0.8;                     // For gaussian smoothing of test images
     double cutOffRatio = 0.83;              // For ratio test
     int boxHeight = 225;                    // Box dimension 1 (might rotate)
