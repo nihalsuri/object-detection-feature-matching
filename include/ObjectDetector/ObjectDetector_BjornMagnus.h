@@ -6,15 +6,15 @@
 #include <opencv2/highgui.hpp>     
 #include <opencv2/features2d.hpp>  
 
-#include "ObjectDetector/featureDetection_MaxPries.h"
-#include "FeatureMatcher/featureMatching_MaxPries.h"
+#include "FeatureDetectorMatcher/featureDetection_MaxPries.h"
+#include "FeatureDetectorMatcher/featureMatching_MaxPries.h"
 #include "Utils/inputProcessing_MaxPries.h"
 
 // Fits a box with given size to contain highest amount of features, the box get place moth horizontally and vertically 
 // Inputs:
 // img          -Image to place the box on (Use only the dimention for grid search)
 // Keypoints -Vector of keypoints who you want the box fitted to 
-// boxWidht      -Width of the box 
+// boxWidth      -Width of the box 
 // boxHeight     -Height of the boz
 // bestBox      -A rect to where the best box get written to 
 void fitBox(const cv::Mat &img, std::vector<cv::KeyPoint> &Keypoints, const int boxWidth, const int boxHeight, cv::Rect &bestBox);
@@ -23,7 +23,7 @@ void fitBox(const cv::Mat &img, std::vector<cv::KeyPoint> &Keypoints, const int 
 // Inputs:
 // img           -Image to place the box on (Use only the dimention for grid search)
 // Keypoints -Vector of keypoints who you want the box fitted to 
-// boxWidht      -Width of the box 
+// boxWidth      -Width of the box 
 // boxHeight     -Height of the boz
 // bestBoxCented -A rect to where the best centred box get written to 
 void fitBoxCentred(const cv::Mat &img, std::vector<cv::KeyPoint> &Keypoints, const int boxWidth, const int boxHeight, cv::Rect &bestBoxCentred);
@@ -53,12 +53,24 @@ void findBestBox(std::vector<cv::KeyPoint> &Keypoints,std::vector<cv::Rect> boxe
 // minKeypoints -Minimal keypoints to decide if the box contain the object or not 
 void boxDecider(std::vector<cv::KeyPoint> &Keypoints,cv::Rect &box, int minKeypoints);
 
-// Processes one image (input:  one image path,
-//                                               full descriptor list of one object,
-//                                               mode - choose which box,
-//					                             minimal keypoints; 
-//                                               rect object)
-void runDetection(std::string imagePath, cv::Mat descriptorList, int mode ,int minKeypoints , cv::Rect &objectDeteced,std::vector<cv::KeyPoint> &goodKeypoints, const double sigma, const double cutOffRatio);
+// Processes one image 
+// Inputs:
+// imagePath      - path of the image to be processed
+// desciptorList  - list of all descriptors for one object
+// mode           - choice of algorithm to draw boxes
+// minKeypoints   - minimum number of keypoints to be considered a match
+// objectDetected - target for the box of a detected object
+// goodKeypoints  - target for the selected good keypoints
+// sigma          - variance for the gaussian blur
+// cuttOffRatio   - cut off ratio for the ratio test
+// boxHeight      - height for the box, only relevant if mode=1 or 2
+// boxWidth       - width for the box, only relevant if mode=1 or 2
+// detectorMode   - choice which type of features is detected
+void runDetection(std::string imagePath, cv::Mat &descriptorList, int mode, 
+                  int minKeypoints, 
+                  cv::Rect &objectDeteced, std::vector<cv::KeyPoint> &goodKeypoints,
+                  double sigma, double cutOffRatio, int boxHeight, int boxWidth,
+                  int detectorMode=0);
 
 
 
